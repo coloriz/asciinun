@@ -1,16 +1,13 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Node",
+    "target": "ES2019",
+    "module": "CommonJS",
     "baseUrl": "./src",
     "paths": {
-      "@/helpers": [
-        "helpers/index.js"
-      ],
       "@/*": ["*"]
     },
     "declaration": true,
+    "importHelpers": true,
     "rootDir": "src",
     "outDir": "dist",
     "esModuleInterop": true,
@@ -18,10 +15,8 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "include": [
-    "src/**/*.ts"
-  ],
+  "include": ["src/**/*.ts"],
   "ts-node": {
-    "esm": true
+    "require": ["tsconfig-paths/register"]
   }
 }
