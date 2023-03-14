@@ -1,4 +1,4 @@
-import * as fs from "fs";
+import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
 import { Args, Command, Flags } from "@oclif/core";
@@ -40,9 +40,9 @@ const doNewSite = async (basepath: string, force: boolean) => {
     path.join(basepath, "themes"),
   ];
 
-  if (fs.existsSync(basepath)) {
+  if (await helpers.exists(basepath)) {
     if (!(await helpers.isDir(basepath))) {
-      throw new Error(`${basepath} already exists but not a directory`);
+      throw new CLIError(`${basepath} already exists but not a directory`);
     }
 
     const isEmpty = await helpers.isEmpty(basepath);
@@ -54,16 +54,14 @@ const doNewSite = async (basepath: string, force: boolean) => {
     } else if (!isEmpty && force) {
       const all = [...dirs, path.join(basepath, "config.toml")];
       for (const path of all) {
-        if (fs.existsSync(path)) {
+        if (await helpers.exists(path)) {
           throw new CLIError(`${path} already exists`);
         }
       }
     }
   }
 
-  await Promise.all(
-    dirs.map((dir) => fs.promises.mkdir(dir, { recursive: true }))
-  );
+  await Promise.all(dirs.map((dir) => fs.mkdir(dir, { recursive: true })));
 
   createConfig(basepath);
 

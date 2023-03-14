@@ -1,13 +1,35 @@
-import * as fs from "node:fs";
+import { PathLike, Stats } from "node:fs";
+import * as fs from "node:fs/promises";
 
-export const isDir = async (path: fs.PathLike): Promise<boolean> => {
-  if (!fs.existsSync(path)) {
-    return false;
+export const isDir = async (path: PathLike): Promise<boolean> => {
+  let stats: Stats;
+
+  try {
+    stats = await fs.stat(path);
+  } catch (error) {
+    const err = error as NodeJS.ErrnoException;
+    if (err.code === "ENOENT") {
+      return false;
+    }
+    throw error;
   }
 
-  return (await fs.promises.stat(path)).isDirectory();
+  return stats.isDirectory();
 };
 
-export const isEmpty = async (path: fs.PathLike): Promise<boolean> => {
-  return (await fs.promises.readdir(path)).length == 0;
+export const isEmpty = async (path: PathLike): Promise<boolean> => {
+  return (await fs.readdir(path)).length == 0;
+};
+
+export const exists = async (path: PathLike): Promise<boolean> => {
+  try {
+    await fs.access(path);
+  } catch (error) {
+    const err = error as NodeJS.ErrnoException;
+    if (err.code === "ENOENT") {
+      return false;
+    }
+    throw error;
+  }
+  return true;
 };
