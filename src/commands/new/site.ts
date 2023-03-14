@@ -9,11 +9,15 @@ import * as helpers from "@/helpers";
 export default class NewSiteCommand extends Command {
   static summary = "Create a new site (skeleton)";
 
-  static description = `Create a new site in the provided directory.
+  static description = `
+Create a new site in the provided directory.
 The new site will have the correct structure, but no content or theme yet.`;
 
   static flags = {
-    force: Flags.boolean({ description: "init inside non-empty directory" }),
+    force: Flags.boolean({
+      default: false,
+      description: "init inside non-empty directory",
+    }),
   };
 
   static args = {
